@@ -1,0 +1,5 @@
+{
+  "name": "CanvasAI Studio",
+  "description": "A professional AI-powered infinite canvas for image generation and editing using Nano Banana Pro (Gemini 3 Pro) models. Features upscaling, background removal, and magic editing.",
+  "requestFramePermissions": []
+}
