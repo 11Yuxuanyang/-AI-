@@ -1599,11 +1599,9 @@ export function CanvasEditor({ project, onBack }: CanvasEditorProps) {
         {items.length === 0 && !isProcessing && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0">
             <div className="pointer-events-auto text-center max-w-md">
-              {/* 三傻Logo动画 */}
+              {/* 三傻Logo */}
               <div className="mb-6 flex justify-center">
-                <div className="animate-bounce-slow">
-                  <Logo size={72} showText={false} />
-                </div>
+                <Logo size={72} showText={false} />
               </div>
 
               {/* 欢迎文案 */}
