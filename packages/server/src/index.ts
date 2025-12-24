@@ -7,6 +7,7 @@ import { aiRouter } from './routes/ai.js';
 import { authRouter } from './routes/auth.js';
 import { chatRouter } from './routes/chat.js';
 import { errorHandler, notFoundHandler } from './middleware/index.js';
+import { logProviderStatus } from './providers/index.js';
 
 const app = express();
 
@@ -94,6 +95,8 @@ app.use(errorHandler);
 // 启动服务器
 app.listen(config.port, () => {
   console.log(`🚀 服务器运行在 http://localhost:${config.port}`);
-  console.log(`📦 AI 提供商: ${config.ai.provider}`);
   console.log(`🔒 安全中间件已启用: helmet, rate-limit`);
+
+  // 打印 AI 提供商配置状态
+  logProviderStatus();
 });

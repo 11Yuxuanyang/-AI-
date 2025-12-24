@@ -12,8 +12,18 @@ dist
 dist-ssr
 *.local
 
-# Server env
+# Environment files (contain API keys - NEVER commit)
+.env
+.env.local
+.env.*.local
 packages/server/.env
+packages/client/.env
+
+# Security sensitive files
+*.pem
+*.key
+*.crt
+secrets.json
 
 # Editor directories and files
 .vscode/*

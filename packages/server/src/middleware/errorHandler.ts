@@ -6,6 +6,30 @@ export interface AppError extends Error {
   code?: string;
 }
 
+/**
+ * 敏感信息模式 - 用于过滤日志和错误信息
+ */
+const SENSITIVE_PATTERNS = [
+  /api[_-]?key/i,
+  /api[_-]?secret/i,
+  /password/i,
+  /token/i,
+  /bearer\s+\S+/i,
+  /sk-[a-zA-Z0-9]+/i,  // OpenAI 密钥格式
+  /authorization:\s*\S+/i,
+];
+
+/**
+ * 过滤错误信息中的敏感内容
+ */
+function sanitizeErrorMessage(message: string): string {
+  let sanitized = message;
+  for (const pattern of SENSITIVE_PATTERNS) {
+    sanitized = sanitized.replace(pattern, '[REDACTED]');
+  }
+  return sanitized;
+}
+
 export class HttpError extends Error implements AppError {
   statusCode: number;
   isOperational: boolean;
@@ -45,7 +69,18 @@ export class HttpError extends Error implements AppError {
 }
 
 /**
+ * 生成简单的请求 ID（用于日志追踪）
+ */
+function generateRequestId(): string {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+/**
  * Global error handler middleware
+ * 安全增强：
+ * - 生产环境隐藏堆栈信息
+ * - 过滤敏感信息
+ * - 添加请求 ID 用于追踪
  */
 export const errorHandler = (
   err: AppError,
@@ -55,21 +90,41 @@ export const errorHandler = (
 ) => {
   const statusCode = err.statusCode || 500;
   const isDev = process.env.NODE_ENV === 'development';
+  const requestId = generateRequestId();
 
-  // Log error
-  console.error(`[${new Date().toISOString()}] Error:`, {
-    message: err.message,
+  // 过滤敏感信息
+  const safeMessage = sanitizeErrorMessage(err.message);
+
+  // 安全日志记录（不记录敏感请求头）
+  console.error(`[${new Date().toISOString()}] [${requestId}] Error:`, {
+    message: safeMessage,
     statusCode,
     path: req.path,
     method: req.method,
+    ip: req.ip,
     ...(isDev && { stack: err.stack }),
   });
 
-  // Send response
+  // 确定返回给客户端的错误信息
+  let clientError: string;
+  if (isDev) {
+    // 开发环境：显示过滤后的详细错误
+    clientError = safeMessage;
+  } else if (err.isOperational) {
+    // 生产环境 + 操作性错误：显示过滤后的错误信息
+    clientError = safeMessage;
+  } else {
+    // 生产环境 + 程序错误：显示通用错误信息
+    clientError = '服务器内部错误';
+  }
+
+  // 发送响应
   res.status(statusCode).json({
     success: false,
-    error: isDev || err.isOperational ? err.message : '服务器内部错误',
+    error: clientError,
+    requestId, // 用于用户反馈问题时追踪
     ...(err.code && { code: err.code }),
+    // 生产环境永远不返回堆栈信息
     ...(isDev && { stack: err.stack }),
   });
 };

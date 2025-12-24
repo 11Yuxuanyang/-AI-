@@ -1,6 +1,48 @@
 import { z } from 'zod';
 import { Request, Response, NextFunction } from 'express';
-import { HttpError } from './errorHandler';
+import { HttpError } from './errorHandler.js';
+
+/**
+ * 安全限制常量
+ */
+export const LIMITS = {
+  // 图片数据最大大小（10MB Base64 编码约 13.3MB 字符）
+  MAX_IMAGE_SIZE: 15 * 1024 * 1024, // 15MB 字符
+  // 提示词最大长度
+  MAX_PROMPT_LENGTH: 2000,
+  // 单条消息最大长度
+  MAX_MESSAGE_LENGTH: 10000,
+  // 最大消息数量
+  MAX_MESSAGES: 50,
+  // 支持的提供商列表
+  SUPPORTED_PROVIDERS: ['openai', 'doubao', 'qwen', 'custom'] as const,
+  // 支持的宽高比
+  SUPPORTED_ASPECT_RATIOS: ['1:1', '16:9', '9:16', '4:3', '3:4'] as const,
+};
+
+/**
+ * 自定义验证：Base64 图片数据
+ * 验证格式和大小
+ */
+const base64ImageSchema = z.string()
+  .min(1, '图片数据不能为空')
+  .max(LIMITS.MAX_IMAGE_SIZE, `图片数据过大（最大 ${Math.floor(LIMITS.MAX_IMAGE_SIZE / 1024 / 1024)}MB）`)
+  .refine(
+    (val) => {
+      // 允许 data URL 格式或纯 base64
+      if (val.startsWith('data:image/')) {
+        return /^data:image\/(png|jpeg|jpg|gif|webp);base64,/.test(val);
+      }
+      // 纯 base64 检查（简单验证）
+      return /^[A-Za-z0-9+/]+=*$/.test(val.slice(0, 100));
+    },
+    { message: '无效的图片数据格式' }
+  );
+
+/**
+ * 提供商验证 Schema
+ */
+const providerSchema = z.enum(LIMITS.SUPPORTED_PROVIDERS).optional();
 
 /**
  * Creates a validation middleware for request body
@@ -40,49 +82,81 @@ export const validateQuery = <T extends z.ZodType>(schema: T) => {
   };
 };
 
-// Common validation schemas
+/**
+ * 通用验证 schemas
+ * 所有 AI API 请求验证规则
+ */
 export const schemas = {
-  // AI Generate request
+  /**
+   * AI 图像生成请求
+   * POST /api/ai/generate
+   */
   generateImage: z.object({
-    prompt: z.string().min(1, '提示词不能为空').max(2000, '提示词过长'),
+    prompt: z.string()
+      .min(1, '提示词不能为空')
+      .max(LIMITS.MAX_PROMPT_LENGTH, '提示词过长'),
     model: z.string().optional(),
-    aspectRatio: z.enum(['1:1', '16:9', '9:16', '4:3', '3:4']).optional().default('1:1'),
+    aspectRatio: z.enum(LIMITS.SUPPORTED_ASPECT_RATIOS).optional().default('1:1'),
     resolution: z.string().optional(),
+    provider: providerSchema, // 新增：指定提供商
   }),
 
-  // AI Edit request
+  /**
+   * AI 图像编辑请求
+   * POST /api/ai/edit
+   */
   editImage: z.object({
-    prompt: z.string().min(1, '提示词不能为空').max(2000, '提示词过长'),
-    image: z.string().min(1, '图片数据不能为空'),
+    prompt: z.string()
+      .min(1, '提示词不能为空')
+      .max(LIMITS.MAX_PROMPT_LENGTH, '提示词过长'),
+    image: base64ImageSchema, // 使用增强的图片验证
     model: z.string().optional(),
+    provider: providerSchema,
   }),
 
-  // AI Upscale request
+  /**
+   * AI 图像放大请求
+   * POST /api/ai/upscale
+   */
   upscaleImage: z.object({
-    image: z.string().min(1, '图片数据不能为空'),
+    image: base64ImageSchema, // 使用增强的图片验证
     model: z.string().optional(),
+    resolution: z.enum(['2K', '4K']).optional(),
+    provider: providerSchema,
   }),
 
-  // Chat request
+  /**
+   * 聊天请求
+   * POST /api/chat
+   */
   chatMessage: z.object({
     messages: z
       .array(
         z.object({
           role: z.enum(['user', 'assistant', 'system']),
-          content: z.string().max(10000, '消息内容过长'),
+          content: z.string().max(LIMITS.MAX_MESSAGE_LENGTH, '消息内容过长'),
           attachments: z
             .array(
               z.object({
                 type: z.string(),
-                content: z.string(),
+                content: z.string().max(LIMITS.MAX_IMAGE_SIZE, '附件内容过大'),
               })
             )
             .optional(),
         })
       )
       .min(1, '消息列表不能为空')
-      .max(50, '消息数量过多'),
+      .max(LIMITS.MAX_MESSAGES, '消息数量过多'),
     webSearchEnabled: z.boolean().optional().default(false),
     stream: z.boolean().optional().default(true),
+    provider: providerSchema,
   }),
 };
+
+/**
+ * 导出类型（供其他模块使用）
+ */
+export type GenerateImageInput = z.infer<typeof schemas.generateImage>;
+export type EditImageInput = z.infer<typeof schemas.editImage>;
+export type UpscaleImageInput = z.infer<typeof schemas.upscaleImage>;
+export type ChatMessageInput = z.infer<typeof schemas.chatMessage>;
