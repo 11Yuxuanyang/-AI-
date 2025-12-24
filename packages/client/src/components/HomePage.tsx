@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, MoreVertical, ChevronDown, Trash2, Copy, Edit3 } from 'lucide-react';
+import { Plus, MoreVertical, ChevronDown, Trash2, Copy, Edit3, LogOut } from 'lucide-react';
 import { Project } from '../types';
 import * as ProjectService from '../services/projectService';
+import { LoginModal } from './LoginModal';
+
+interface User {
+  id: string;
+  nickname: string;
+  avatar: string;
+}
 
 interface HomePageProps {
   onOpenProject?: (project: Project) => void;
@@ -13,10 +20,34 @@ export function HomePage(_props: HomePageProps) {
   const [sortBy, setSortBy] = useState<'recent' | 'name'>('recent');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
     setProjects(ProjectService.getProjects());
+    // 检查本地存储的用户
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        localStorage.removeItem('user');
+      }
+    }
   }, []);
+
+  const handleLoginSuccess = (loggedInUser: User) => {
+    setUser(loggedInUser);
+    localStorage.setItem('user', JSON.stringify(loggedInUser));
+    setShowLoginModal(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    setShowUserMenu(false);
+  };
 
   const handleOpenProject = (project: Project) => {
     window.location.hash = `/project/${project.id}`;
@@ -83,32 +114,213 @@ export function HomePage(_props: HomePageProps) {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <MoreVertical size={20} className="text-gray-600" />
-          </button>
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center text-white font-medium text-sm ring-2 ring-green-200">
-            Y
-          </div>
+          {user ? (
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center gap-2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.nickname}
+                    className="w-9 h-9 rounded-full ring-2 ring-gray-200"
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-400 to-violet-500 flex items-center justify-center text-white font-medium text-sm ring-2 ring-violet-200">
+                    {user.nickname.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </button>
+
+              {showUserMenu && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setShowUserMenu(false)} />
+                  <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900 truncate">{user.nickname}</p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                    >
+                      <LogOut size={16} />
+                      退出登录
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowLoginModal(true)}
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              登录
+            </button>
+          )}
         </div>
       </header>
 
-      {/* Hero Section with Gradient */}
-      <div className="relative pt-16 pb-12 px-6 overflow-hidden">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-[600px] h-[400px] bg-purple-300/60 rounded-full blur-[100px]" />
-          <div className="absolute top-10 right-1/4 w-[500px] h-[350px] bg-pink-300/40 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 right-1/3 w-[400px] h-[300px] bg-blue-300/50 rounded-full blur-[100px]" />
+      {/* Hero Section - Geometric Editorial Style */}
+      <div className="relative pt-20 pb-16 px-6 overflow-hidden bg-white">
+        {/* Animated Geometric Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Large hollow circle - top right */}
+          <div
+            className="absolute -top-20 -right-20 w-80 h-80 border-[3px] border-gray-900 rounded-full opacity-[0.08]"
+            style={{ animation: 'spin 60s linear infinite' }}
+          />
+
+          {/* Solid black circle - left side */}
+          <div
+            className="absolute top-1/3 left-[8%] w-4 h-4 bg-gray-900 rounded-full"
+            style={{ animation: 'float 4s ease-in-out infinite' }}
+          />
+
+          {/* Small hollow circle */}
+          <div
+            className="absolute top-[20%] right-[15%] w-6 h-6 border-2 border-gray-900 rounded-full opacity-40"
+            style={{ animation: 'float 5s ease-in-out infinite 0.5s' }}
+          />
+
+          {/* Horizontal line - accent */}
+          <div
+            className="absolute top-[45%] left-[5%] w-24 h-[2px] bg-gray-900 opacity-20"
+            style={{ animation: 'slideIn 1s ease-out' }}
+          />
+
+          {/* Cross element */}
+          <div className="absolute bottom-[30%] right-[10%] opacity-30">
+            <div className="w-8 h-[2px] bg-gray-900" style={{ animation: 'fadeIn 1s ease-out 0.3s both' }} />
+            <div className="w-[2px] h-8 bg-gray-900 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ animation: 'fadeIn 1s ease-out 0.5s both' }} />
+          </div>
+
+          {/* Dotted square pattern */}
+          <div
+            className="absolute bottom-[20%] left-[12%] grid grid-cols-3 gap-2 opacity-20"
+            style={{ animation: 'fadeIn 1s ease-out 0.7s both' }}
+          >
+            {[...Array(9)].map((_, i) => (
+              <div key={i} className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
+            ))}
+          </div>
+
+          {/* Diagonal line */}
+          <div
+            className="absolute top-[60%] right-[25%] w-16 h-[2px] bg-gray-900 opacity-15 rotate-45"
+            style={{ animation: 'slideIn 1s ease-out 0.4s both' }}
+          />
         </div>
 
-        <div className="relative text-center max-w-3xl mx-auto">
-          <h1 className="text-5xl font-light text-gray-900 mb-4">
-            用 AI 画出你的想法
+        {/* Main Content */}
+        <div className="relative max-w-4xl mx-auto">
+          {/* Eyebrow text */}
+          <div
+            className="flex items-center justify-center gap-3 mb-6"
+            style={{ animation: 'fadeInUp 0.8s ease-out' }}
+          >
+            <div className="w-8 h-[1px] bg-gray-400" />
+            <span className="text-xs font-medium tracking-[0.3em] text-gray-500 uppercase">Canvas Studio</span>
+            <div className="w-8 h-[1px] bg-gray-400" />
+          </div>
+
+          {/* Main Title - Bold Typography */}
+          <h1
+            className="text-center mb-6"
+            style={{ animation: 'fadeInUp 0.8s ease-out 0.1s both' }}
+          >
+            <span className="block text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 tracking-tight leading-[1.1]">
+              用 AI 画出
+            </span>
+            <span className="block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mt-1">
+              <span className="text-gray-900">你的</span>
+              <span className="relative inline-block ml-2">
+                <span className="text-gray-900">想法</span>
+                {/* Underline decoration */}
+                <svg
+                  className="absolute -bottom-2 left-0 w-full"
+                  height="8"
+                  viewBox="0 0 100 8"
+                  preserveAspectRatio="none"
+                  style={{ animation: 'drawLine 0.6s ease-out 0.8s both' }}
+                >
+                  <path
+                    d="M0 4 Q25 0, 50 4 T100 4"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="none"
+                    className="text-gray-900"
+                  />
+                </svg>
+              </span>
+            </span>
           </h1>
-          <p className="text-xl text-gray-500 font-light">
+
+          {/* Subtitle */}
+          <p
+            className="text-center text-lg md:text-xl text-gray-500 font-normal max-w-xl mx-auto leading-relaxed"
+            style={{ animation: 'fadeInUp 0.8s ease-out 0.2s both' }}
+          >
             输入描述，一键生成图片，自由编辑
           </p>
+
+          {/* Decorative element below subtitle */}
+          <div
+            className="flex items-center justify-center gap-2 mt-8"
+            style={{ animation: 'fadeInUp 0.8s ease-out 0.3s both' }}
+          >
+            <div className="w-2 h-2 bg-gray-900 rounded-full" />
+            <div className="w-2 h-2 bg-gray-400 rounded-full" />
+            <div className="w-2 h-2 bg-gray-300 rounded-full" />
+          </div>
         </div>
+
+        {/* CSS Animations */}
+        <style>{`
+          @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateX(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+          @keyframes drawLine {
+            from {
+              stroke-dasharray: 200;
+              stroke-dashoffset: 200;
+            }
+            to {
+              stroke-dasharray: 200;
+              stroke-dashoffset: 0;
+            }
+          }
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
 
       {/* Action Bar */}
@@ -269,6 +481,13 @@ export function HomePage(_props: HomePageProps) {
           </div>
         )}
       </div>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }
