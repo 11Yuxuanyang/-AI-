@@ -188,10 +188,7 @@ export function HomePage(_props: HomePageProps) {
       </header>
 
       {/* Hero Section - Chat Input Style */}
-      <div className="relative pt-16 pb-12 px-6 bg-gradient-to-b from-[#FFF9F5] to-white">
-        {/* Google Font */}
-        <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet" />
-
+      <div className="relative pt-16 pb-12 px-6 bg-white">
         {/* Main Content */}
         <div className="relative max-w-3xl mx-auto">
           {/* Main Title */}
@@ -199,28 +196,12 @@ export function HomePage(_props: HomePageProps) {
             className="text-center mb-10"
             style={{ animation: 'fadeInUp 0.6s ease-out' }}
           >
-            {/* Decorative badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-gray-100 mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#FFB5BA] animate-pulse" />
-              <span className="text-sm text-gray-600">AI 创意画布</span>
-            </div>
-
-            <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
-              style={{ fontFamily: '"ZCOOL KuaiLe", cursive' }}
-            >
-              <span className="text-[#FFB5BA]">说出</span>
-              <span className="text-[#B5DEFF]">你的</span>
-              <span className="text-[#BFFCC6]">想象</span>
-              <span className="text-gray-800">，</span>
-              <br className="hidden sm:block" />
-              <span className="text-[#FFC9DE]">AI </span>
-              <span className="text-[#C4FAF8]">帮你</span>
-              <span className="text-[#E7CFFF]">画出来</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-4">
+              AI 时代的图片编辑器
             </h1>
 
-            <p className="mt-4 text-gray-500 text-lg">
-              输入描述 → 生成图片 → 自由编辑 → 导出分享
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">
+              用文字生成图片，智能编辑修图，一键生成分镜脚本
             </p>
           </div>
 
@@ -261,38 +242,31 @@ export function HomePage(_props: HomePageProps) {
             </div>
           </div>
 
-          {/* Quick Action Chips - Macaron Colors */}
+          {/* Quick Action Chips */}
           <div
             className="flex flex-wrap items-center justify-center gap-2 mt-6"
             style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
           >
             <button
               onClick={() => handlePromptSubmit('一只可爱的柴犬在樱花树下')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFB5BA]/10 border border-[#FFB5BA]/30 rounded-full text-sm text-[#E8878C] hover:bg-[#FFB5BA]/20 hover:border-[#FFB5BA]/50 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-gray-200 transition-colors"
             >
               <Sparkles size={16} />
-              生成插画
-            </button>
-            <button
-              onClick={() => handlePromptSubmit('赛博朋克风格的未来城市夜景')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#B5DEFF]/10 border border-[#B5DEFF]/30 rounded-full text-sm text-[#6BA3D6] hover:bg-[#B5DEFF]/20 hover:border-[#B5DEFF]/50 transition-colors"
-            >
-              <Palette size={16} />
-              艺术创作
-            </button>
-            <button
-              onClick={() => handlePromptSubmit('简约现代的品牌 logo 设计')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#E7CFFF]/10 border border-[#E7CFFF]/30 rounded-full text-sm text-[#A67DD6] hover:bg-[#E7CFFF]/20 hover:border-[#E7CFFF]/50 transition-colors"
-            >
-              <Wand2 size={16} />
-              设计灵感
+              AI 生图
             </button>
             <button
               onClick={() => handleCreateProject()}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#BFFCC6]/10 border border-[#BFFCC6]/30 rounded-full text-sm text-[#5DB56A] hover:bg-[#BFFCC6]/20 hover:border-[#BFFCC6]/50 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-gray-200 transition-colors"
             >
-              <Plus size={16} />
-              空白画布
+              <Palette size={16} />
+              图片编辑
+            </button>
+            <button
+              onClick={() => handleCreateProject()}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-gray-200 transition-colors"
+            >
+              <Wand2 size={16} />
+              分镜脚本
             </button>
           </div>
         </div>
