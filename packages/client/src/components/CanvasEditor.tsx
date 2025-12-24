@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   MousePointer2,
-  Hand,
   Type,
   Plus,
   ImagePlus,
@@ -1128,16 +1127,6 @@ export function CanvasEditor({ project, onBack }: CanvasEditorProps) {
             onClick={() => { setToolMode(ToolMode.SELECT); setShowCreativeTools(false); }}
           >
             <MousePointer2 size={20} />
-          </button>
-        </Tooltip>
-
-        {/* 平移 */}
-        <Tooltip content="平移 (H)" side="right">
-          <button
-            className={`relative p-3 rounded-full transition-all duration-200 ease-out ${toolMode === ToolMode.PAN ? 'bg-gray-800 text-white shadow-md scale-105' : 'text-gray-500 hover:bg-gray-200/50 hover:scale-105'}`}
-            onClick={() => { setToolMode(ToolMode.PAN); setShowCreativeTools(false); }}
-          >
-            <Hand size={20} />
           </button>
         </Tooltip>
 
