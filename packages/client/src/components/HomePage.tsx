@@ -201,7 +201,7 @@ export function HomePage(_props: HomePageProps) {
             </h1>
 
             <p className="text-lg text-gray-500 max-w-xl mx-auto">
-              告别繁琐修图，从创意到成片一气呵成
+              生图 · 修图 · 分镜，一站搞定
             </p>
           </div>
 
