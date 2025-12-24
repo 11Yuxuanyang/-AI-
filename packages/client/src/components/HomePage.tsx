@@ -77,7 +77,7 @@ export function HomePage(_props: HomePageProps) {
                 <Sparkles size={18} className="text-white" />
               </div>
               <span className="text-lg font-semibold tracking-tight">
-                Canvas<span className="text-amber-400">AI</span>
+                三傻大闹<span className="text-amber-400">AI圈</span>
               </span>
             </div>
 
@@ -234,7 +234,7 @@ export function HomePage(_props: HomePageProps) {
         {/* Footer */}
         <footer className="border-t border-white/[0.04] mt-auto">
           <div className="max-w-6xl mx-auto px-6 py-8 flex items-center justify-between text-xs text-white/20">
-            <span>© 2025 CanvasAI Studio</span>
+            <span>© 2025 三傻大闹AI圈</span>
             <div className="flex items-center gap-6">
               <a href="#" className="hover:text-white/40 transition-colors">关于</a>
               <a href="#" className="hover:text-white/40 transition-colors">帮助</a>

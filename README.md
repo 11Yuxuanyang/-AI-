@@ -1,4 +1,4 @@
-# 三傻的灵感屋 - CanvasAI Studio
+# 三傻大闹AI圈 - CanvasAI Studio
 
 AI 驱动的画布创作与剧本分镜工具。支持图像生成、编辑、自由绘制和剧本分镜管理。
 
