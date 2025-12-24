@@ -13,6 +13,24 @@ const loginStates = new Map<string, {
 // 用户存储（生产环境应使用数据库）
 const users = new Map<string, User>();
 
+// 手机用户存储（按手机号索引）
+const phoneUsers = new Map<string, PhoneUser>();
+
+// 验证码存储
+const verificationCodes = new Map<string, {
+  code: string;
+  createdAt: number;
+  attempts: number;
+}>();
+
+interface PhoneUser {
+  id: string;
+  phone: string;
+  nickname: string;
+  avatar: string;
+  createdAt: number;
+}
+
 interface WechatUser {
   openid: string;
   nickname: string;
@@ -259,5 +277,161 @@ authRouter.post('/logout', (req: Request, res: Response) => {
   res.json({
     success: true,
     message: '已登出',
+  });
+});
+
+// ============ 手机号登录/注册 ============
+
+// 生成6位验证码
+function generateVerificationCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// 清理过期验证码
+setInterval(() => {
+  const now = Date.now();
+  for (const [phone, data] of verificationCodes.entries()) {
+    // 5分钟过期
+    if (now - data.createdAt > 5 * 60 * 1000) {
+      verificationCodes.delete(phone);
+    }
+  }
+}, 60 * 1000);
+
+/**
+ * POST /api/auth/phone/send-code
+ * 发送手机验证码
+ */
+authRouter.post('/phone/send-code', (req: Request, res: Response) => {
+  const { phone } = req.body;
+
+  // 验证手机号格式
+  if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+    return res.json({
+      success: false,
+      error: '请输入正确的手机号',
+    });
+  }
+
+  // 检查是否频繁发送
+  const existing = verificationCodes.get(phone);
+  if (existing && Date.now() - existing.createdAt < 60 * 1000) {
+    return res.json({
+      success: false,
+      error: '发送太频繁，请稍后再试',
+    });
+  }
+
+  // 生成验证码
+  const code = generateVerificationCode();
+
+  // 存储验证码
+  verificationCodes.set(phone, {
+    code,
+    createdAt: Date.now(),
+    attempts: 0,
+  });
+
+  // TODO: 实际项目中需要调用短信服务发送验证码
+  // 这里仅打印到控制台用于测试
+  console.log(`[SMS] 发送验证码到 ${phone}: ${code}`);
+
+  res.json({
+    success: true,
+    message: '验证码已发送',
+    // 开发环境返回验证码，方便测试
+    ...(process.env.NODE_ENV === 'development' && { devCode: code }),
+  });
+});
+
+/**
+ * POST /api/auth/phone/verify
+ * 验证手机验证码并登录/注册
+ */
+authRouter.post('/phone/verify', (req: Request, res: Response) => {
+  const { phone, code, mode } = req.body;
+
+  // 验证参数
+  if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+    return res.json({
+      success: false,
+      error: '请输入正确的手机号',
+    });
+  }
+
+  if (!code || code.length !== 6) {
+    return res.json({
+      success: false,
+      error: '请输入6位验证码',
+    });
+  }
+
+  // 获取存储的验证码
+  const stored = verificationCodes.get(phone);
+
+  if (!stored) {
+    return res.json({
+      success: false,
+      error: '验证码已过期，请重新获取',
+    });
+  }
+
+  // 检查尝试次数
+  if (stored.attempts >= 5) {
+    verificationCodes.delete(phone);
+    return res.json({
+      success: false,
+      error: '验证码错误次数过多，请重新获取',
+    });
+  }
+
+  // 验证码过期检查（5分钟）
+  if (Date.now() - stored.createdAt > 5 * 60 * 1000) {
+    verificationCodes.delete(phone);
+    return res.json({
+      success: false,
+      error: '验证码已过期，请重新获取',
+    });
+  }
+
+  // 验证码错误
+  if (stored.code !== code) {
+    stored.attempts++;
+    return res.json({
+      success: false,
+      error: '验证码错误',
+    });
+  }
+
+  // 验证成功，删除验证码
+  verificationCodes.delete(phone);
+
+  // 查找或创建用户
+  let user = phoneUsers.get(phone);
+
+  if (!user) {
+    // 注册新用户
+    user = {
+      id: generateState(),
+      phone,
+      nickname: `用户${phone.slice(-4)}`,
+      avatar: '',
+      createdAt: Date.now(),
+    };
+    phoneUsers.set(phone, user);
+    console.log(`[Auth] 新用户注册: ${phone}`);
+  } else {
+    console.log(`[Auth] 用户登录: ${phone}`);
+  }
+
+  res.json({
+    success: true,
+    data: {
+      user: {
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
+      },
+    },
   });
 });

@@ -12,21 +12,18 @@ export function Logo({ size = 32, showText = true, className = '' }: LogoProps) 
       <svg
         width={size}
         height={size}
-        viewBox="0 0 32 32"
+        viewBox="0 0 36 32"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* 圆形背景 */}
-        <circle cx="16" cy="16" r="16" fill="#18181B" />
+        {/* 左 - 橙色圆 */}
+        <circle cx="10" cy="20" r="10" fill="#F97316" />
 
-        {/* 三个抽象圆点 - 代表"三傻" */}
-        <circle cx="8" cy="16" r="2.5" fill="white" />
-        <circle cx="16" cy="16" r="2.5" fill="white" />
-        <circle cx="24" cy="16" r="2.5" fill="white" />
+        {/* 中 - 紫色圆（靠上，叠在上层） */}
+        <circle cx="18" cy="12" r="11" fill="#8B5CF6" />
 
-        {/* 连接线 - 代表"AI连接" */}
-        <line x1="10.5" y1="16" x2="13.5" y2="16" stroke="white" strokeWidth="1.5" />
-        <line x1="18.5" y1="16" x2="21.5" y2="16" stroke="white" strokeWidth="1.5" />
+        {/* 右 - 青色圆 */}
+        <circle cx="26" cy="20" r="10" fill="#06B6D4" />
       </svg>
 
       {showText && (
