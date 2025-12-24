@@ -197,11 +197,11 @@ export function HomePage(_props: HomePageProps) {
             style={{ animation: 'fadeInUp 0.6s ease-out' }}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-4">
-              你说，AI 画
+              每个脑洞，都值得被画出来
             </h1>
 
             <p className="text-lg text-gray-500 max-w-xl mx-auto">
-              生图 · 修图 · 分镜，一站搞定
+              AI 生图 + 智能编辑 + 分镜创作，专业级创作工具，人人可用
             </p>
           </div>
 
