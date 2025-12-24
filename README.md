@@ -1,20 +1,72 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 三傻的灵感屋 - CanvasAI Studio
 
-# Run and deploy your AI Studio app
+AI 驱动的画布创作与剧本分镜工具。支持图像生成、编辑、自由绘制和剧本分镜管理。
 
-This contains everything you need to run your app locally.
+## 功能特性
 
-View your app in AI Studio: https://ai.studio/apps/drive/1Qt6ZRsciU2Jcx-rTkpA2j7HG1OS4JLYu
+- 🎨 **智能画布** - 支持平移、缩放的无限画布
+- 🖼️ **AI 图像生成** - 集成自定义 AI 模型，文字生成图片
+- ✏️ **多种绘图工具** - 画笔、形状、文字、箭头等
+- 🎬 **剧本分镜** - 场景管理、时间轴、视觉提示词
+- 💬 **AI 对话助手** - 侧边栏 Chatbot 面板
+- 📷 **图片导入** - 支持上传图片和摄像头拍照
 
-## Run Locally
+## 技术栈
 
-**Prerequisites:**  Node.js
+- **前端**: React 19 + TypeScript + Vite + Tailwind CSS
+- **后端**: Node.js + Express + TypeScript
+- **架构**: Monorepo (npm workspaces)
 
+## 快速开始
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### 环境要求
+
+- Node.js 18+
+
+### 安装运行
+
+```bash
+# 安装依赖
+npm install
+
+# 同时启动前后端
+npm run dev
+
+# 仅启动前端 (端口 3000)
+npm run dev:client
+
+# 仅启动后端 (端口 3001)
+npm run dev:server
+```
+
+### 配置 AI 提供商
+
+编辑 `packages/server/.env`:
+
+```env
+AI_PROVIDER=custom
+AI_API_KEY=你的API密钥
+AI_API_BASE_URL=https://你的API地址
+AI_DEFAULT_MODEL=模型名称
+```
+
+## 项目结构
+
+```
+├── packages/
+│   ├── client/          # 前端 React 应用
+│   │   ├── src/
+│   │   │   ├── components/    # 组件
+│   │   │   ├── services/      # API 服务
+│   │   │   └── types.ts       # 类型定义
+│   │   └── index.html
+│   └── server/          # 后端 Express 服务
+│       └── src/
+│           ├── routes/        # API 路由
+│           └── providers/     # AI 提供商
+└── package.json         # workspace 配置
+```
+
+## License
+
+MIT
