@@ -187,8 +187,46 @@ export function HomePage(_props: HomePageProps) {
         </div>
       </header>
 
-      {/* Hero Section - Chat Input Style */}
-      <div className="relative pt-16 pb-12 px-6 bg-white">
+      {/* Hero Section - Pixel Style */}
+      <div className="relative pt-16 pb-12 px-6 bg-white overflow-hidden">
+        {/* Pixel Decorations */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Pixel blocks - left side */}
+          <div className="absolute top-20 left-[10%] flex gap-1" style={{ animation: 'fadeIn 1s ease-out 0.3s both' }}>
+            <div className="w-3 h-3 bg-[#FF6B6B]" />
+            <div className="w-3 h-3 bg-[#4ECDC4]" />
+          </div>
+          <div className="absolute top-32 left-[8%]" style={{ animation: 'fadeIn 1s ease-out 0.5s both' }}>
+            <div className="w-2 h-2 bg-[#FFE66D]" />
+          </div>
+
+          {/* Pixel blocks - right side */}
+          <div className="absolute top-24 right-[12%] flex flex-col gap-1" style={{ animation: 'fadeIn 1s ease-out 0.4s both' }}>
+            <div className="flex gap-1">
+              <div className="w-2 h-2 bg-[#95E1D3]" />
+              <div className="w-2 h-2 bg-[#95E1D3]" />
+            </div>
+            <div className="w-2 h-2 bg-[#95E1D3] ml-1" />
+          </div>
+          <div className="absolute top-40 right-[8%] flex gap-1" style={{ animation: 'fadeIn 1s ease-out 0.6s both' }}>
+            <div className="w-3 h-3 bg-[#DDA0DD]" />
+          </div>
+
+          {/* Pixel cursor icon - left */}
+          <div className="absolute bottom-32 left-[15%] opacity-40" style={{ animation: 'float 3s ease-in-out infinite' }}>
+            <svg width="24" height="24" viewBox="0 0 16 16" fill="none">
+              <path d="M2 2h2v2H2V2zm2 2h2v2H4V4zm2 2h2v2H6V6zm2 2h2v2H8V8zm2 2h2v2h-2v-2zm-2 2h2v2H8v-2zm-2-2h2v2H6v-2z" fill="#4ECDC4"/>
+            </svg>
+          </div>
+
+          {/* Pixel star - right */}
+          <div className="absolute bottom-40 right-[18%] opacity-50" style={{ animation: 'pulse 2s ease-in-out infinite' }}>
+            <svg width="20" height="20" viewBox="0 0 8 8" fill="none">
+              <path d="M3 0h2v2h2v2h-2v2H3V4H1V2h2V0z" fill="#FFE66D"/>
+            </svg>
+          </div>
+        </div>
+
         {/* Main Content */}
         <div className="relative max-w-3xl mx-auto">
           {/* Main Title */}
@@ -282,6 +320,18 @@ export function HomePage(_props: HomePageProps) {
               opacity: 1;
               transform: translateY(0);
             }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+          }
+          @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
           }
         `}</style>
       </div>
