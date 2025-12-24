@@ -6,97 +6,68 @@ interface LogoProps {
   className?: string;
 }
 
-// 像素绘制辅助函数
-const Pixel = ({ x, y, color, s = 2 }: { x: number; y: number; color: string; s?: number }) => (
-  <rect x={x * s} y={y * s} width={s} height={s} fill={color} />
-);
-
 export function Logo({ size = 32, showText = true, className = '' }: LogoProps) {
-  const scale = size / 32;
+  const scale = size / 24;
 
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <svg
-        width={48 * scale}
-        height={32 * scale}
-        viewBox="0 0 48 32"
+        width={36 * scale}
+        height={24 * scale}
+        viewBox="0 0 36 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ imageRendering: 'pixelated' }}
+        shapeRendering="crispEdges"
       >
         {/* === 傻一：橙色 - 开心 === */}
         <g>
-          {/* 头 */}
-          {[2,3,4,5,6].map(x => <Pixel key={`o1-${x}`} x={x} y={4} color="#FB923C" />)}
-          {[1,2,3,4,5,6,7].map(x => <Pixel key={`o2-${x}`} x={x} y={5} color="#FB923C" />)}
-          {[1,2,3,4,5,6,7].map(x => <Pixel key={`o3-${x}`} x={x} y={6} color="#FB923C" />)}
-          {[1,2,3,4,5,6,7].map(x => <Pixel key={`o4-${x}`} x={x} y={7} color="#FB923C" />)}
-          {[1,2,3,4,5,6,7].map(x => <Pixel key={`o5-${x}`} x={x} y={8} color="#FB923C" />)}
-          {[1,2,3,4,5,6,7].map(x => <Pixel key={`o6-${x}`} x={x} y={9} color="#FB923C" />)}
-          {[2,3,4,5,6].map(x => <Pixel key={`o7-${x}`} x={x} y={10} color="#FB923C" />)}
+          {/* 头 7x7 */}
+          <rect x="0" y="5" width="7" height="1" fill="#FB923C" />
+          <rect x="0" y="6" width="8" height="5" fill="#FB923C" />
+          <rect x="1" y="11" width="6" height="1" fill="#FB923C" />
           {/* 眼睛 */}
-          <Pixel x={2} y={6} color="#fff" />
-          <Pixel x={3} y={6} color="#1a1a1a" />
-          <Pixel x={5} y={6} color="#1a1a1a" />
-          <Pixel x={6} y={6} color="#fff" />
+          <rect x="1" y="7" width="2" height="2" fill="#fff" />
+          <rect x="5" y="7" width="2" height="2" fill="#fff" />
+          <rect x="2" y="8" width="1" height="1" fill="#1a1a1a" />
+          <rect x="5" y="8" width="1" height="1" fill="#1a1a1a" />
           {/* 笑嘴 */}
-          <Pixel x={3} y={8} color="#1a1a1a" />
-          <Pixel x={4} y={9} color="#1a1a1a" />
-          <Pixel x={5} y={8} color="#1a1a1a" />
-          {/* 腮红 */}
-          <Pixel x={1} y={7} color="#FDBA74" />
-          <Pixel x={7} y={7} color="#FDBA74" />
+          <rect x="2" y="10" width="1" height="1" fill="#1a1a1a" />
+          <rect x="3" y="11" width="2" height="1" fill="#1a1a1a" />
+          <rect x="5" y="10" width="1" height="1" fill="#1a1a1a" />
         </g>
 
-        {/* === 傻二：紫色 - 坏笑（C位） === */}
+        {/* === 傻二：紫色 - 坏笑（C位偏上） === */}
         <g>
-          {/* 头 - 稍大 */}
-          {[18,19,20,21,22,23].map(x => <Pixel key={`p1-${x}`} x={x} y={2} color="#8B5CF6" />)}
-          {[17,18,19,20,21,22,23,24].map(x => <Pixel key={`p2-${x}`} x={x} y={3} color="#8B5CF6" />)}
-          {[17,18,19,20,21,22,23,24].map(x => <Pixel key={`p3-${x}`} x={x} y={4} color="#8B5CF6" />)}
-          {[17,18,19,20,21,22,23,24].map(x => <Pixel key={`p4-${x}`} x={x} y={5} color="#8B5CF6" />)}
-          {[17,18,19,20,21,22,23,24].map(x => <Pixel key={`p5-${x}`} x={x} y={6} color="#8B5CF6" />)}
-          {[17,18,19,20,21,22,23,24].map(x => <Pixel key={`p6-${x}`} x={x} y={7} color="#8B5CF6" />)}
-          {[17,18,19,20,21,22,23,24].map(x => <Pixel key={`p7-${x}`} x={x} y={8} color="#8B5CF6" />)}
-          {[18,19,20,21,22,23].map(x => <Pixel key={`p8-${x}`} x={x} y={9} color="#8B5CF6" />)}
+          {/* 头 8x8 */}
+          <rect x="13" y="1" width="8" height="1" fill="#8B5CF6" />
+          <rect x="12" y="2" width="10" height="6" fill="#8B5CF6" />
+          <rect x="13" y="8" width="8" height="1" fill="#8B5CF6" />
           {/* 眯眯眼 */}
-          <Pixel x={18} y={5} color="#1a1a1a" />
-          <Pixel x={19} y={4} color="#1a1a1a" />
-          <Pixel x={22} y={4} color="#1a1a1a" />
-          <Pixel x={23} y={5} color="#1a1a1a" />
+          <rect x="13" y="4" width="1" height="1" fill="#1a1a1a" />
+          <rect x="14" y="3" width="2" height="1" fill="#1a1a1a" />
+          <rect x="18" y="3" width="2" height="1" fill="#1a1a1a" />
+          <rect x="20" y="4" width="1" height="1" fill="#1a1a1a" />
           {/* 坏笑 */}
-          <Pixel x={18} y={7} color="#1a1a1a" />
-          <Pixel x={19} y={8} color="#1a1a1a" />
-          <Pixel x={20} y={8} color="#1a1a1a" />
-          <Pixel x={21} y={8} color="#1a1a1a" />
-          <Pixel x={22} y={8} color="#1a1a1a" />
-          <Pixel x={23} y={7} color="#1a1a1a" />
+          <rect x="14" y="6" width="1" height="1" fill="#1a1a1a" />
+          <rect x="15" y="7" width="4" height="1" fill="#1a1a1a" />
+          <rect x="19" y="6" width="1" height="1" fill="#1a1a1a" />
           {/* 舌头 */}
-          <Pixel x={20} y={9} color="#F472B6" />
-          <Pixel x={21} y={9} color="#F472B6" />
+          <rect x="16" y="8" width="2" height="1" fill="#F472B6" />
         </g>
 
         {/* === 傻三：青色 - 无辜 === */}
         <g>
-          {/* 头 */}
-          {[34,35,36,37,38].map(x => <Pixel key={`c1-${x}`} x={x} y={4} color="#06B6D4" />)}
-          {[33,34,35,36,37,38,39].map(x => <Pixel key={`c2-${x}`} x={x} y={5} color="#06B6D4" />)}
-          {[33,34,35,36,37,38,39].map(x => <Pixel key={`c3-${x}`} x={x} y={6} color="#06B6D4" />)}
-          {[33,34,35,36,37,38,39].map(x => <Pixel key={`c4-${x}`} x={x} y={7} color="#06B6D4" />)}
-          {[33,34,35,36,37,38,39].map(x => <Pixel key={`c5-${x}`} x={x} y={8} color="#06B6D4" />)}
-          {[33,34,35,36,37,38,39].map(x => <Pixel key={`c6-${x}`} x={x} y={9} color="#06B6D4" />)}
-          {[34,35,36,37,38].map(x => <Pixel key={`c7-${x}`} x={x} y={10} color="#06B6D4" />)}
+          {/* 头 7x7 */}
+          <rect x="28" y="5" width="7" height="1" fill="#06B6D4" />
+          <rect x="27" y="6" width="9" height="5" fill="#06B6D4" />
+          <rect x="28" y="11" width="7" height="1" fill="#06B6D4" />
           {/* 大眼睛 */}
-          <Pixel x={34} y={6} color="#fff" />
-          <Pixel x={35} y={6} color="#fff" />
-          <Pixel x={34} y={7} color="#fff" />
-          <Pixel x={35} y={7} color="#1a1a1a" />
-          <Pixel x={37} y={6} color="#fff" />
-          <Pixel x={38} y={6} color="#fff" />
-          <Pixel x={37} y={7} color="#1a1a1a" />
-          <Pixel x={38} y={7} color="#fff" />
+          <rect x="28" y="7" width="2" height="2" fill="#fff" />
+          <rect x="32" y="7" width="2" height="2" fill="#fff" />
+          <rect x="29" y="8" width="1" height="1" fill="#1a1a1a" />
+          <rect x="32" y="8" width="1" height="1" fill="#1a1a1a" />
           {/* 小嘴 */}
-          <Pixel x={36} y={9} color="#1a1a1a" />
+          <rect x="30" y="10" width="2" height="1" fill="#1a1a1a" />
         </g>
       </svg>
 

@@ -197,11 +197,11 @@ export function HomePage(_props: HomePageProps) {
             style={{ animation: 'fadeInUp 0.6s ease-out' }}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-4">
-              AI 时代的图片编辑器
+              你说，AI 画
             </h1>
 
             <p className="text-lg text-gray-500 max-w-xl mx-auto">
-              用文字生成图片，智能编辑修图，一键生成分镜脚本
+              告别繁琐修图，从创意到成片一气呵成
             </p>
           </div>
 
